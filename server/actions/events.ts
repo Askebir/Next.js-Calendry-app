@@ -96,8 +96,17 @@ export async function getEvents(clerkUserId:string):Promise<EventRow[]>{
    const events = await db.query.EventTable.findMany({
     where:({clerkUserId:userIdCol}, {eq}) => eq(userIdCol, clerkUserId),
 
-    orderBy:({name}, {asc, sql}) => asc(sql`lower(${name})`)
+    orderBy:({name}, {asc, sql}) => asc(sql`lower(${name})`),
    })
 
    return events
+}
+
+
+
+export async function getEvent(userId:string, eventId:string):Promise<EventRow | undefined> {
+    const  event = await db.query.EventTable.findFirst({
+        where:({id, clerkUserId}, {and, eq}) => and(eq(clerkUserId, userId), eq(id, eventId)),
+    }) 
+  return event ?? undefined
 }
